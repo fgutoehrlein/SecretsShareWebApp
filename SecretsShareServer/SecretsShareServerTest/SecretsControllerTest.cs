@@ -138,5 +138,22 @@ namespace SecretsShareServerTest
 
             Assert.AreEqual(400, badRequestResult.StatusCode);
         }
+
+        [TestMethod]
+        public void Test_if_secrets_can_be_retrieved_by_wrong_key_and_wrong_password()
+        {
+            InitializeControllerAndCacheAndContext(out SecretsController controller, out MemoryCache cache, out DefaultHttpContext context);
+
+            var data = new SecretDataModel()
+            {
+                HashedInput = "someInput",
+                HashedPassword = "somePassword"
+            };
+            var postOkResult = controller.PostSecrets(data) as OkObjectResult;
+            Assert.AreEqual(200, postOkResult.StatusCode);
+            var badRequestResult = controller.GetSecret(Guid.NewGuid().ToString(), Guid.NewGuid().ToString()) as BadRequestResult;
+
+            Assert.AreEqual(400, badRequestResult.StatusCode);
+        }
     }
 }
