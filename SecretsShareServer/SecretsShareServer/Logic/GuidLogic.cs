@@ -7,7 +7,7 @@ namespace SecretsShareServer.Logic
     {
         public static string ReturnNewGuidIfAlreadyUsed(string guidKey, IMemoryCache memoryCache)
         {
-            while (memoryCache.TryGetValue(guidKey, out SecretDataModel result))
+            while (memoryCache.TryGetValue(guidKey, out EncryptedDataModel result))
             {
                 guidKey = Guid.NewGuid().ToString();
             }

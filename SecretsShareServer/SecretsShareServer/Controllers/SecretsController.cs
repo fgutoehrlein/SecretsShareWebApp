@@ -4,7 +4,9 @@ using Microsoft.Extensions.Caching.Memory;
 using SecretsShareServer.Logic;
 using SecretsShareServer.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
 using System.Diagnostics.Eventing.Reader;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SecretsShareServer.Controllers
 {
@@ -33,7 +35,17 @@ namespace SecretsShareServer.Controllers
             var cacheEntryOptions = new MemoryCacheEntryOptions()
             .SetSlidingExpiration(TimeSpan.FromMinutes(30));
 
-            _memoryCache.Set(guidKey, data, cacheEntryOptions);
+            byte[] bytePassword = System.Text.Encoding.UTF8.GetBytes(data.Password);
+            var byteHashedPassword = SHA256.HashData(bytePassword);
+            var stringHashedPassword = Convert.ToBase64String(byteHashedPassword);
+
+            var encryptedData = new EncryptedDataModel()
+            {
+                HashedPassword = stringHashedPassword,
+                EncryptedSecretInput = EncryptionLogic.EncryptString(data.Password, data.SecretInput) 
+            };
+
+            _memoryCache.Set(guidKey, encryptedData, cacheEntryOptions);
 
             return Ok(guidKey);
         }
@@ -41,24 +53,29 @@ namespace SecretsShareServer.Controllers
 
         [HttpGet]
         [Route("Secret")]
-        public IActionResult GetSecret([FromHeader(Name = "Guid-Key")][Required] string guidKey, [FromHeader(Name = "Hashed-Guid-Password")][Required] string hashedGuidPassword)
+        public IActionResult GetSecret([FromHeader(Name = "Guid-Key")][Required] string guidKey, [FromHeader(Name = "Hashed-Guid-Password")][Required] string password)
         {
-            if (string.IsNullOrEmpty(guidKey) || string.IsNullOrEmpty(hashedGuidPassword))
+            if (string.IsNullOrEmpty(guidKey) || string.IsNullOrEmpty(password))
             {
                 return BadRequest();
             }
 
-            if(!_memoryCache.TryGetValue(guidKey, out SecretDataModel data))
+            if(!_memoryCache.TryGetValue(guidKey, out EncryptedDataModel data))
             {
                 return BadRequest();
             }
 
-            if(data.HashedPassword != hashedGuidPassword) 
+            byte[] bytePassword = System.Text.Encoding.UTF8.GetBytes(password);
+            var byteHashedPassword = SHA256.HashData(bytePassword);
+            var stringHashedPassword = Convert.ToBase64String(byteHashedPassword);
+
+            if (data.HashedPassword != stringHashedPassword) 
             {
                 return BadRequest();
             }
 
-            return Ok(data.HashedInput);
+            var decryptedInput = EncryptionLogic.DecryptString(password, data.EncryptedSecretInput);
+            return Ok(decryptedInput);
         }
     }
 }

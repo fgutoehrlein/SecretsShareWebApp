@@ -2,7 +2,7 @@
 {
     public class SecretDataModel
     {
-        public string HashedInput { get; set; }
-        public string HashedPassword { get; set; }
+        public string SecretInput { get; set; }
+        public string Password { get; set; }
     }
 }
