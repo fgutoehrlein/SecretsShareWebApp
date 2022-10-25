@@ -34,8 +34,8 @@ namespace SecretsShareServerTest
 
             var data = new SecretDataModel()
             {
-                HashedInput = "someInput",
-                HashedPassword = "somePassword"
+                SecretInput = "someInput",
+                Password = "somePassword"
             };
 
             var result = controller.PostSecrets(data);
@@ -48,9 +48,12 @@ namespace SecretsShareServerTest
             var guidKey = okResult.Value;
 
             Assert.IsTrue(cache.Count == 1);
-            Assert.IsTrue(cache.TryGetValue(guidKey, out SecretDataModel cacheValue));
-            Assert.IsTrue(cacheValue.HashedPassword == data.HashedPassword);
-            Assert.IsTrue(cacheValue.HashedInput == data.HashedInput);
+
+            Assert.IsTrue(cache.TryGetValue(guidKey, out EncryptedDataModel cacheValue));
+
+            Assert.IsTrue(!string.IsNullOrEmpty(cacheValue.HashedPassword));
+
+            Assert.IsTrue(!string.IsNullOrEmpty(cacheValue.EncryptedSecretInput));
         }
 
         [TestMethod]
@@ -60,8 +63,8 @@ namespace SecretsShareServerTest
 
             var data = new SecretDataModel()
             {
-                HashedInput = "someInput",
-                HashedPassword = "somePassword"
+                SecretInput = "someInput",
+                Password = "somePassword"
             };
 
             var result = controller.PostSecrets(data);
@@ -75,9 +78,7 @@ namespace SecretsShareServerTest
 
             Assert.IsFalse(guidKey == null);
             Assert.IsTrue(cache.Count == 1);
-            Assert.IsTrue(cache.TryGetValue(guidKey, out SecretDataModel cacheValue));
-            Assert.IsTrue(cacheValue.HashedPassword == data.HashedPassword);
-            Assert.IsTrue(cacheValue.HashedInput == data.HashedInput);
+            Assert.IsTrue(cache.TryGetValue(guidKey, out EncryptedDataModel cacheValue));
 
             var newGuidKey0 = GuidLogic.ReturnNewGuidIfAlreadyUsed(guidKey.ToString(), cache);
             Assert.IsTrue(newGuidKey0 != guidKey.ToString());
@@ -93,44 +94,44 @@ namespace SecretsShareServerTest
 
             var data = new SecretDataModel()
             {
-                HashedInput = "someInput",
-                HashedPassword = "somePassword"
+                SecretInput = "someInput",
+                Password = "somePassword"
             };
             var postOkResult = controller.PostSecrets(data) as OkObjectResult;
             Assert.AreEqual(200, postOkResult.StatusCode);
 
-            var getOkResult = controller.GetSecret(postOkResult.Value.ToString(), data.HashedPassword) as OkObjectResult;
+            var getOkResult = controller.GetSecret(postOkResult.Value.ToString(), data.Password) as OkObjectResult;
             Assert.AreEqual(200, getOkResult.StatusCode);
 
             Assert.IsTrue(getOkResult.Value.ToString() == "someInput");
         }
 
         [TestMethod]
-        public void Test_if_secrets_can_be_retrieved_by_wrong_key_and_password()
+        public void Test_if_secrets_cant_be_retrieved_by_wrong_key_and_password()
         {
             InitializeControllerAndCacheAndContext(out SecretsController controller, out MemoryCache cache, out DefaultHttpContext context);
 
             var data = new SecretDataModel()
             {
-                HashedInput = "someInput",
-                HashedPassword = "somePassword"
+                SecretInput = "someInput",
+                Password = "somePassword"
             };
             var postOkResult = controller.PostSecrets(data) as OkObjectResult;
             Assert.AreEqual(200, postOkResult.StatusCode);
 
-            var badRequestResult = controller.GetSecret(Guid.NewGuid().ToString(), data.HashedPassword) as BadRequestResult;
+            var badRequestResult = controller.GetSecret(Guid.NewGuid().ToString(), data.Password) as BadRequestResult;
             Assert.AreEqual(400, badRequestResult.StatusCode);
         }
 
         [TestMethod]
-        public void Test_if_secrets_can_be_retrieved_by_key_and_wrong_password()
+        public void Test_if_secrets_cant_be_retrieved_by_key_and_wrong_password()
         {
             InitializeControllerAndCacheAndContext(out SecretsController controller, out MemoryCache cache, out DefaultHttpContext context);
 
             var data = new SecretDataModel()
             {
-                HashedInput = "someInput",
-                HashedPassword = "somePassword"
+                SecretInput = "someInput",
+                Password = "somePassword"
             };
             var postOkResult = controller.PostSecrets(data) as OkObjectResult;
             Assert.AreEqual(200, postOkResult.StatusCode);
@@ -140,14 +141,14 @@ namespace SecretsShareServerTest
         }
 
         [TestMethod]
-        public void Test_if_secrets_can_be_retrieved_by_wrong_key_and_wrong_password()
+        public void Test_if_secrets_cant_be_retrieved_by_wrong_key_and_wrong_password()
         {
             InitializeControllerAndCacheAndContext(out SecretsController controller, out MemoryCache cache, out DefaultHttpContext context);
 
             var data = new SecretDataModel()
             {
-                HashedInput = "someInput",
-                HashedPassword = "somePassword"
+                SecretInput = "someInput",
+                Password = "somePassword"
             };
             var postOkResult = controller.PostSecrets(data) as OkObjectResult;
             Assert.AreEqual(200, postOkResult.StatusCode);
