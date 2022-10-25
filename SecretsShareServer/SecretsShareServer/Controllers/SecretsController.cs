@@ -33,7 +33,7 @@ namespace SecretsShareServer.Controllers
             guidKey = GuidLogic.ReturnNewGuidIfAlreadyUsed(guidKey, _memoryCache);
 
             var cacheEntryOptions = new MemoryCacheEntryOptions()
-            .SetSlidingExpiration(TimeSpan.FromMinutes(30));
+            .SetSlidingExpiration(TimeSpan.FromMinutes(5));
 
             byte[] bytePassword = System.Text.Encoding.UTF8.GetBytes(data.Password);
             var byteHashedPassword = SHA256.HashData(bytePassword);
