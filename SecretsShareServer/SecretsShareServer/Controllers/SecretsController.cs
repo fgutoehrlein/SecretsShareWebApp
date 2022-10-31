@@ -52,7 +52,7 @@ namespace SecretsShareServer.Controllers
 
 
         [HttpGet]
-        [Route("Secret")]
+        [Route("/Secret")]
         public IActionResult GetSecret([FromHeader(Name = "Guid-Key")][Required] string guidKey, [FromHeader(Name = "Hashed-Guid-Password")][Required] string password)
         {
             if (string.IsNullOrEmpty(guidKey) || string.IsNullOrEmpty(password))
