@@ -1,0 +1,15 @@
+services:
+  frontend:
+    image: frontend/secrets-share:v1
+    build:
+      dockerfile: ./SecretsShareFrontend/Dockerfile
+    ports: 
+      - "8000:80"
+
+  backend:
+    image: backend/secrets-share:v1
+    build:
+      dockerfile: ./SecretsShareServer/SecretsShareServer/Dockerfile
+    ports: 
+      - "8001:80"
+  

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-navigation-bar',
@@ -8,7 +7,7 @@ import { Router, RouterModule } from '@angular/router';
 })
 export class NavigationBarComponent implements OnInit {
   public isMenuCollapsed = true;
-  constructor(private router:Router) { }
+  constructor() { }
 
   ngOnInit(): void {
   }
