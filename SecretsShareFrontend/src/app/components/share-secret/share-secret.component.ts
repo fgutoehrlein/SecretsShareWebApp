@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SecretDataModel } from 'src/app/models/secret-data-model';
 
 @Component({
   selector: 'app-share-secret',
@@ -8,6 +9,7 @@ import { Component, OnInit } from '@angular/core';
 export class ShareSecretComponent implements OnInit {
   public secretSaved:boolean = false;
   public secretId:string = '';
+  public secretString:string = '';
   public password:string = '';
 
   constructor() { }
@@ -15,7 +17,14 @@ export class ShareSecretComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public saveSecret(){
+  public saveSecret(inputData:any){
+    // if (this.password == '') {
+    //   this.password = uuidv4();
+    // }
+
+    let data = new SecretDataModel();
+    data.SecretInput = this.secretString;
+    data.Password = this.password;
     this.secretSaved = true;
   }
 }
