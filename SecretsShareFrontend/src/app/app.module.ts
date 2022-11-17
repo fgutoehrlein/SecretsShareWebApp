@@ -5,10 +5,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
-import { NavigationBarComponent } from './navigation-bar/navigation-bar.component';
-import { ShareSecretComponent } from './share-secret/share-secret.component';
-import { RetrieveSecretComponent } from './retrieve-secret/retrieve-secret.component';
-import { AboutComponent } from './about/about.component';
+import { NavigationBarComponent } from './components/navigation-bar/navigation-bar.component';
+import { ShareSecretComponent } from './components/share-secret/share-secret.component';
+import { RetrieveSecretComponent } from './components/retrieve-secret/retrieve-secret.component';
+import { AboutComponent } from './components/about/about.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
