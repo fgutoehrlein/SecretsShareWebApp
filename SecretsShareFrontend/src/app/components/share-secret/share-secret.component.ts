@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SecretDataModel } from 'src/app/models/secret-data-model';
+import { SecretService } from 'src/app/services/secret.service';
+import { v4 as uuid } from 'uuid';
 
 @Component({
   selector: 'app-share-secret',
@@ -9,22 +11,33 @@ import { SecretDataModel } from 'src/app/models/secret-data-model';
 export class ShareSecretComponent implements OnInit {
   public secretSaved:boolean = false;
   public secretId:string = '';
-  public secretString:string = '';
   public password:string = '';
 
-  constructor() { }
+  constructor(private secretService:SecretService) { }
 
   ngOnInit(): void {
   }
 
-  public saveSecret(inputData:any){
-    // if (this.password == '') {
-    //   this.password = uuidv4();
-    // }
+  public saveSecret(inputData:SecretDataModel){
+
+    this.password = inputData.Password;
+    if (inputData.Password == '') {
+      this.password = uuid();
+    }
 
     let data = new SecretDataModel();
-    data.SecretInput = this.secretString;
+    data.SecretInput = inputData.SecretInput;
     data.Password = this.password;
-    this.secretSaved = true;
+
+    this.secretService.postSecret(data).subscribe(res => 
+      {
+        this.secretId = res;
+      }
+    );
+    //this.secretId = res;
+
+    if (this.secretId != '') {
+      this.secretSaved = true;
+    }
   }
 }

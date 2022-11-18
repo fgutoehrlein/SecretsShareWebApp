@@ -12,6 +12,7 @@ import { ShareSecretComponent } from './components/share-secret/share-secret.com
 import { RetrieveSecretComponent } from './components/retrieve-secret/retrieve-secret.component';
 import { AboutComponent } from './components/about/about.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SecretService } from './services/secret.service';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ]),
     BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [SecretService],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

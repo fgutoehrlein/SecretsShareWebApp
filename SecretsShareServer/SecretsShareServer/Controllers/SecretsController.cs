@@ -24,11 +24,14 @@ namespace SecretsShareServer.Controllers
         [Route("/Secret")]
         public IActionResult PostSecrets([FromBody]SecretDataModel data)
         {
+            HttpContext.Response.Headers.Add("Access-Control-Allow-Headers","*");
+            HttpContext.Response.Headers.Add("Access-Control-Allow-Origin","*");
+
             if (data == null)
             {
                 return BadRequest();
             }
-
+            
             var guidKey = Guid.NewGuid().ToString();
             guidKey = GuidLogic.ReturnNewGuidIfAlreadyUsed(guidKey, _memoryCache);
 
@@ -46,15 +49,25 @@ namespace SecretsShareServer.Controllers
             };
 
             _memoryCache.Set(guidKey, encryptedData, cacheEntryOptions);
-
             return Ok(guidKey);
         }
 
+        [HttpOptions]
+        [Route("/Secret")]
+        public IActionResult OptionsSecret()
+        {
+            HttpContext.Response.Headers.Add("Access-Control-Allow-Headers","*");
+            HttpContext.Response.Headers.Add("Access-Control-Allow-Origin","*");
+            return Ok();
+        }
 
         [HttpGet]
         [Route("/Secret")]
         public IActionResult GetSecret([FromHeader(Name = "Guid-Key")][Required] string guidKey, [FromHeader(Name = "Hashed-Guid-Password")][Required] string password)
         {
+            HttpContext.Response.Headers.Add("Access-Control-Allow-Headers","*");
+            HttpContext.Response.Headers.Add("Access-Control-Allow-Origin","*");
+
             if (string.IsNullOrEmpty(guidKey) || string.IsNullOrEmpty(password))
             {
                 return BadRequest();
@@ -75,6 +88,7 @@ namespace SecretsShareServer.Controllers
             }
 
             var decryptedInput = EncryptionLogic.DecryptString(password, data.EncryptedSecretInput);
+
             return Ok(decryptedInput);
         }
     }
