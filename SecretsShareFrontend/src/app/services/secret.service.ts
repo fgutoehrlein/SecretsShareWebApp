@@ -18,9 +18,10 @@ export class SecretService {
   constructor(private http: HttpClient) { }
 
   public getSecret(secretId: string, password: string): Observable<any> {
-
-    const headers = new HttpHeaders({
-      'Content-Type': 'text/plain'
+    let headers = new HttpHeaders({
+      'Content-Type': 'text/plain',
+      'Guid-Key': secretId,
+      'Password' : password
     });
 
     return this.http.get(this.apiUrl + '/Secret', {headers: headers, responseType:'text'})
@@ -28,9 +29,10 @@ export class SecretService {
   }
 
   public postSecret(secretData: SecretDataModel): Observable<any> {
-    const headers = new HttpHeaders({
+    let headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
+
     return this.http.post(this.apiUrl + '/Secret', JSON.stringify(secretData), {headers: headers, responseType:'text'})
       .pipe(retry(1), catchError(this.handleError));
   }
@@ -44,7 +46,7 @@ export class SecretService {
       // handle server-side error
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
-    window.alert(errorMessage);
+    console.error(errorMessage);
     return throwError(() => {
       return errorMessage;
     });

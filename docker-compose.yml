@@ -11,8 +11,8 @@ services:
     ports: 
       - "8001:80"
 
-  debug-client:
-    image: debug-client/client:v1
-    build: ./DebugContainer
+  #debug-client:
+    #image: debug-client/client:v1
+    #build: ./DebugContainer
     # docker exec -it secretssharewebapp-debug-client-1 bash
   

@@ -19,7 +19,6 @@ export class ShareSecretComponent implements OnInit {
   }
 
   public saveSecret(inputData:SecretDataModel){
-
     this.password = inputData.Password;
     if (inputData.Password == '') {
       this.password = uuid();
@@ -32,12 +31,11 @@ export class ShareSecretComponent implements OnInit {
     this.secretService.postSecret(data).subscribe(res => 
       {
         this.secretId = res;
+
+        if (this.secretId != '') {
+          this.secretSaved = true;
+        }
       }
     );
-    //this.secretId = res;
-
-    if (this.secretId != '') {
-      this.secretSaved = true;
-    }
   }
 }

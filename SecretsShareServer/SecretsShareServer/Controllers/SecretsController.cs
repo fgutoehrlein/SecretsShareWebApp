@@ -63,7 +63,7 @@ namespace SecretsShareServer.Controllers
 
         [HttpGet]
         [Route("/Secret")]
-        public IActionResult GetSecret([FromHeader(Name = "Guid-Key")][Required] string guidKey, [FromHeader(Name = "Hashed-Guid-Password")][Required] string password)
+        public IActionResult GetSecret([FromHeader(Name = "Guid-Key")][Required] string guidKey, [FromHeader(Name = "Password")][Required] string password)
         {
             HttpContext.Response.Headers.Add("Access-Control-Allow-Headers","*");
             HttpContext.Response.Headers.Add("Access-Control-Allow-Origin","*");
