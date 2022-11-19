@@ -32,7 +32,9 @@ import { SecretService } from './services/secret.service';
       { path: '', component: ShareSecretComponent },
       { path: 'retrieve', component: RetrieveSecretComponent },
       { path: 'about', component: AboutComponent },
-    ]),
+    ],
+      { useHash: true }
+    ),
     BrowserAnimationsModule
   ],
   providers: [SecretService],
